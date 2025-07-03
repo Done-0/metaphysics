@@ -8,8 +8,8 @@ import (
 	"sync"
 
 	"github.com/Done-0/metaphysics/configs"
-	types "github.com/Done-0/metaphysics/internal/ai/model"
 	"github.com/Done-0/metaphysics/internal/ai/provider"
+	"github.com/Done-0/metaphysics/internal/ai/types"
 )
 
 var (

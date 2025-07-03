@@ -22,28 +22,27 @@ import (
 func BuildBaziPrompt(name, gender string, birthTime time.Time, baziInfo map[string]string) string {
 	birthTimeStr := birthTime.Format("2006-01-02 15:04:05")
 
-	// 获取八字排盘字符串（年月日时四柱）
+	// 获取八字排盘字符串
 	baziStr := utils.FormatBaziString(baziInfo)
 
-	// 提取天干
-	yearGan := baziInfo["year_gan"]
-	monthGan := baziInfo["month_gan"]
-	dayGan := baziInfo["day_gan"]
-	hourGan := baziInfo["hour_gan"]
+	// 计算农历时间
+	lunarTimeStr := utils.GetLunarTimeString(birthTime, "solar")
 
-	// 提取地支
-	yearZhi := baziInfo["year_zhi"]
-	monthZhi := baziInfo["month_zhi"]
-	dayZhi := baziInfo["day_zhi"]
-	hourZhi := baziInfo["hour_zhi"]
+	// 计算起运时间
+	qiYunTime := utils.CalculateQiYun(birthTime, gender, baziInfo)
 
-	// 提取命理属性
-	yinYang := baziInfo["yin_yang"]
-	wuXing := baziInfo["wu_xing"]
+	// 计算神煞信息
+	yearShenSha := utils.GetShenSha(baziInfo["year"], "year")
+	monthShenSha := utils.GetShenSha(baziInfo["month"], "month")
+	dayShenSha := utils.GetShenSha(baziInfo["day"], "day")
+	hourShenSha := utils.GetShenSha(baziInfo["hour"], "hour")
 
+	// 计算纳音五行
+	naYinWuXing := utils.GetNaYinWuXing(baziInfo)
+
+	// 返回格式化的提示文本
 	return fmt.Sprintf(BAZI_ANALYSIS_PROMPT,
-		name, gender, birthTimeStr, baziStr,
-		yearGan, yearZhi, monthGan, monthZhi,
-		dayGan, dayZhi, hourGan, hourZhi,
-		yinYang, wuXing)
+		name, gender, birthTimeStr, lunarTimeStr, baziStr,
+		qiYunTime, yearShenSha, monthShenSha, dayShenSha,
+		hourShenSha, naYinWuXing)
 }

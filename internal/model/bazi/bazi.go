@@ -39,6 +39,18 @@ type BaziRecord struct {
 	DayZhi   string `json:"day_zhi" gorm:"size:10"`   // 日支
 	HourZhi  string `json:"hour_zhi" gorm:"size:10"`  // 时支
 
+	// 天干五行
+	YearGanWuXing  string `json:"year_gan_wu_xing" gorm:"size:10"`  // 年干五行
+	MonthGanWuXing string `json:"month_gan_wu_xing" gorm:"size:10"` // 月干五行
+	DayGanWuXing   string `json:"day_gan_wu_xing" gorm:"size:10"`   // 日干五行
+	HourGanWuXing  string `json:"hour_gan_wu_xing" gorm:"size:10"`  // 时干五行
+
+	// 纳音五行
+	YearNaYin  string `json:"year_na_yin" gorm:"size:30"`  // 年柱纳音
+	MonthNaYin string `json:"month_na_yin" gorm:"size:30"` // 月柱纳音
+	DayNaYin   string `json:"day_na_yin" gorm:"size:30"`   // 日柱纳音
+	TimeNaYin  string `json:"time_na_yin" gorm:"size:30"`  // 时柱纳音
+
 	// 命理属性
 	YinYang string `json:"yin_yang" gorm:"size:10"` // 阴阳属性（基于日干）
 	WuXing  string `json:"wu_xing" gorm:"size:10"`  // 五行属性（基于日干）

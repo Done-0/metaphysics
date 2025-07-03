@@ -2,7 +2,7 @@
 APP:
   APP_NAME: "METAPHYSICS"
   APP_HOST: "127.0.0.1" # 如果使用 docker，则改为"0.0.0.0"
-  APP_PORT: "9010"
+  APP_PORT: "8080"
 
 # 数据库相关
 DATABASE:
@@ -10,8 +10,8 @@ DATABASE:
   DB_NAME: "metaphysics_db"
   DB_HOST: "127.0.0.1" # 如果使用 docker，则改为"postgres_db"
   DB_PORT: "5432"
-  DB_USER: "root"
-  DB_PSW: "123456"
+  DB_USER: "fender"
+  DB_PSW: "Lh20230623"
   DB_PATH: "./database" # SQLite 数据库文件路径
 
 # Redis 相关

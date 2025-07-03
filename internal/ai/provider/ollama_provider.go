@@ -14,8 +14,8 @@ import (
 	"github.com/tmc/langchaingo/prompts"
 
 	"github.com/Done-0/metaphysics/configs"
-	types "github.com/Done-0/metaphysics/internal/ai/model"
 	"github.com/Done-0/metaphysics/internal/ai/prompt"
+	"github.com/Done-0/metaphysics/internal/ai/types"
 	"github.com/Done-0/metaphysics/pkg/vo/ai"
 )
 
