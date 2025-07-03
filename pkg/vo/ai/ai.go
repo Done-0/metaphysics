@@ -4,12 +4,19 @@
 package ai
 
 // DeepseekResponse Deepseek 响应结构
+// @Description Deepseek 响应结构
+// @Property    ReasoningContent string true "思维链内容"
+// @Property    Content          string true "最终回答内容"
 type DeepseekResponse struct {
 	ReasoningContent string `json:"reasoning_content"` // 思维链内容
 	Content          string `json:"content"`           // 最终回答内容
 }
 
 // StreamChunk 流式响应数据块
+// @Description 流式响应数据块
+// @Property    ReasoningContent string true "思维链内容片段"
+// @Property    Content          string true "回答内容片段"
+// @Property    Done             bool   true "是否完成"
 type StreamChunk struct {
 	ReasoningContent string `json:"reasoning_content,omitempty"` // 思维链内容片段
 	Content          string `json:"content,omitempty"`           // 回答内容片段

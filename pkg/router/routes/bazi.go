@@ -11,19 +11,19 @@ import (
 )
 
 // RegisterBaziRoutes 注册八字相关路由
-func RegisterBaziRoutes(r *gin.Engine) {
+// 参数：
+//   - r: Gin 路由组
+func RegisterBaziRoutes(r *gin.RouterGroup) {
 	// 创建服务实例
 	service := baziImpl.NewBaziService()
 	// 创建控制器
 	controller := bazi.NewBaziController(service)
 
-	v1 := r.Group("/api/v1")
+	// 八字路由组
+	baziGroup := r.Group("/bazi")
 	{
-		baziGroup := v1.Group("/bazi")
-		{
-			baziGroup.POST("/analyze", controller.AnalyzeOneBazi)              // 普通分析八字
-			baziGroup.POST("/analyze/stream", controller.StreamAnalyzeOneBazi) // 流式分析八字
-			baziGroup.GET("/record", controller.GetBaziRecord)                 // 获取八字记录
-		}
+		baziGroup.POST("/analyze", controller.AnalyzeOneBazi)              // 普通分析八字
+		baziGroup.POST("/analyze/stream", controller.StreamAnalyzeOneBazi) // 流式分析八字
+		baziGroup.GET("/record", controller.GetBaziRecord)                 // 获取八字记录
 	}
 }

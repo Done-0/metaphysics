@@ -229,6 +229,36 @@ func GetLunarTimeString(birthTime time.Time, calendar string) string {
 		lunar.GetTime().GetZhi())
 }
 
+// GetSolarTimeString 获取公历时间字符串
+// 参数：
+//   - birthTime: 出生时间
+//   - calendar: 日历类型 (lunar/solar)
+//
+// 返回值：
+//   - string: 公历时间字符串
+func GetSolarTimeString(birthTime time.Time, calendar string) string {
+	// 获取公历对象
+	var solar *lunarCalendar.Solar
+	if calendar == CALENDAR_LUNAR {
+		// 如果输入是农历，则转换为公历
+		year, month, day := birthTime.Date()
+		hour, minute, second := birthTime.Clock()
+		lunar := lunarCalendar.NewLunar(year, int(month), day, hour, minute, second)
+		solar = lunar.GetSolar()
+	} else {
+		// 如果输入已经是公历，直接使用
+		solar = lunarCalendar.NewSolarFromDate(birthTime)
+	}
+
+	// 返回格式化的公历时间字符串
+	return fmt.Sprintf("%d年%d月%d日 %d时%d分",
+		solar.GetYear(),
+		solar.GetMonth(),
+		solar.GetDay(),
+		solar.GetHour(),
+		solar.GetMinute())
+}
+
 // CalculateQiYun 计算起运时间
 // 参数：
 //   - birthTime: 出生时间

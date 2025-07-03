@@ -15,9 +15,17 @@ import (
 
 // AppConfig 应用配置
 type AppConfig struct {
-	AppName string `mapstructure:"APP_NAME"`
-	AppHost string `mapstructure:"APP_HOST"`
-	AppPort string `mapstructure:"APP_PORT"`
+	AppName string      `mapstructure:"APP_NAME"`
+	AppHost string      `mapstructure:"APP_HOST"`
+	AppPort string      `mapstructure:"APP_PORT"`
+	Email   EmailConfig `mapstructure:"EMAIL"`
+}
+
+// EmailConfig 邮箱配置
+type EmailConfig struct {
+	EmailType string `mapstructure:"EMAIL_TYPE"`
+	FromEmail string `mapstructure:"FROM_EMAIL"`
+	EmailSmtp string `mapstructure:"EMAIL_SMTP"`
 }
 
 // DatabaseConfig 数据库配置

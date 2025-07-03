@@ -52,7 +52,7 @@ func (b *BaziServiceImpl) CreateOneBaziAnalysis(ctx *gin.Context, req *dto.Creat
 	// 计算八字信息
 	baziInfo := utils.CalculateBazi(req.BirthTime, req.Calendar)
 
-	analysis, err := b.aiService.AnalyzeBazi(ctx, req.Name, req.Gender, req.BirthTime, baziInfo)
+	analysis, err := b.aiService.AnalyzeBazi(ctx, req.Name, req.Gender, req.BirthTime, req.Calendar, baziInfo)
 	if err != nil {
 		return nil, fmt.Errorf("八字 AI 分析失败: %w", err)
 	}
@@ -175,7 +175,7 @@ func (b *BaziServiceImpl) StreamCreateOneBaziAnalysis(ctx *gin.Context, req *dto
 		return nil
 	}
 
-	if err := b.aiService.StreamAnalyzeBazi(ctx, req.Name, req.Gender, req.BirthTime, baziInfo, handler); err != nil {
+	if err := b.aiService.StreamAnalyzeBazi(ctx, req.Name, req.Gender, req.BirthTime, req.Calendar, baziInfo, handler); err != nil {
 		sysError := bizErr.New(bizErr.SYSTEM_ERROR, err.Error())
 		utils.SendSSEEvent(ctx, utils.SSE_EVENT_ERROR, vo.Fail(ctx, err.Error(), sysError))
 		return fmt.Errorf("八字分析失败: %s", err.Error())

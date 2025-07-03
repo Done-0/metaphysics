@@ -4,6 +4,34 @@
 package bazi
 
 // BaziResponse 八字分析响应
+// @Description 八字分析响应
+// @Property    RequestID string true "请求 ID"
+// @Property    Name      string true "姓名"
+// @Property    Gender    string true "性别"
+// @Property    Calendar  string true "日历类型 (lunar/solar)"
+// @Property    YearPillar  string true "年柱（干支）"
+// @Property    MonthPillar string true "月柱（干支）"
+// @Property    DayPillar   string true "日柱（干支）"
+// @Property    HourPillar  string true "时柱（干支）"
+// @Property    YearGan     string true "年干"
+// @Property    MonthGan    string true "月干"
+// @Property    DayGan      string true "日干"
+// @Property    HourGan     string true "时干"
+// @Property    YearZhi     string true "年支"
+// @Property    MonthZhi    string true "月支"
+// @Property    DayZhi      string true "日支"
+// @Property    HourZhi     string true "时支"
+// @Property    YearGanWuXing string true "年干五行"
+// @Property    MonthGanWuXing string true "月干五行"
+// @Property    DayGanWuXing string true "日干五行"
+// @Property    HourGanWuXing string true "时干五行"
+// @Property    YearNaYin  string true "年柱纳音"
+// @Property    MonthNaYin string true "月柱纳音"
+// @Property    DayNaYin   string true "日柱纳音"
+// @Property    TimeNaYin  string true "时柱纳音"
+// @Property    YinYang    string true "阴阳属性"
+// @Property    WuXing     string true "五行属性"
+// @Property    Analysis   string true "AI 分析结果"
 type BaziResponse struct {
 	// 基本信息
 	RequestID string `json:"request_id"` // 请求 ID

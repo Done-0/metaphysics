@@ -3,6 +3,11 @@ APP:
   APP_NAME: "METAPHYSICS"
   APP_HOST: "127.0.0.1" # 如果使用 docker，则改为"0.0.0.0"
   APP_PORT: "8080"
+  # 邮箱相关
+  EMAIL:
+    EMAIL_TYPE: "qq" # 支持的邮箱类型: qq, gmail, outlook
+    FROM_EMAIL: "<FROM_EMAIL>" # 发件人邮箱
+    EMAIL_SMTP: "<EMAIL_SMTP>" # SMTP 授权码
 
 # 数据库相关
 DATABASE:
@@ -10,8 +15,8 @@ DATABASE:
   DB_NAME: "metaphysics_db"
   DB_HOST: "127.0.0.1" # 如果使用 docker，则改为"postgres_db"
   DB_PORT: "5432"
-  DB_USER: "fender"
-  DB_PSW: "Lh20230623"
+  DB_USER: "root"
+  DB_PSW: "123456"
   DB_PATH: "./database" # SQLite 数据库文件路径
 
 # Redis 相关
@@ -35,7 +40,7 @@ AI:
   # ollama配置
   OLLAMA_ENABLED: true # 是否启用 ollama
   OLLAMA_API_BASE: "http://localhost:11434" # ollama API 基础 URL
-  OLLAMA_MODEL: "deepseek-r1:8b" # ollama 模型名称
+  OLLAMA_MODEL: "qwen3:8b" # ollama 模型名称
   # deepseek配置
   DEEPSEEK_ENABLED: false # 是否启用 deepseek
   DEEPSEEK_API_KEY: "your-deepseek-api-key" # 请替换为您的 deepseek API 密钥

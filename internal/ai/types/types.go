@@ -28,22 +28,26 @@ type Service interface {
 	//   ctx: 上下文
 	//   name: 姓名
 	//   gender: 性别
+	//   birthTime: 出生时间
+	//   calendar: 日历类型 (lunar/solar)
 	//   baziInfo: 八字信息
 	// 返回值：
 	//   string: 分析结果
 	//   error: 错误信息
-	AnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, baziInfo map[string]string) (string, error)
+	AnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string) (string, error)
 
 	// StreamAnalyzeBazi 流式分析八字
 	// 参数：
 	//   ctx: 上下文
 	//   name: 姓名
 	//   gender: 性别
+	//   birthTime: 出生时间
+	//   calendar: 日历类型 (lunar/solar)
 	//   baziInfo: 八字信息
 	//   handler: 流式响应处理函数
 	// 返回值：
 	//   error: 错误信息
-	StreamAnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, baziInfo map[string]string, handler StreamHandler) error
+	StreamAnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string, handler StreamHandler) error
 
 	// DetermineProvider 确定使用的 AI 提供商
 	// 返回值：

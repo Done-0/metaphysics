@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/Done-0/metaphysics/configs"
-	"github.com/Done-0/metaphysics/internal/ai/types"
 	"github.com/Done-0/metaphysics/internal/ai/prompt"
+	"github.com/Done-0/metaphysics/internal/ai/types"
 	"github.com/Done-0/metaphysics/pkg/vo/ai"
 )
 
@@ -88,14 +88,16 @@ func NewDeepseekProvider(cfg *configs.Config) (types.Service, error) {
 //	ctx: 上下文
 //	name: 姓名
 //	gender: 性别
+//	birthTime: 出生时间
+//	calendar: 日历类型 (lunar/solar)
 //	baziInfo: 八字信息
 //
 // 返回值：
 //
 //	string: 分析结果
 //	error: 错误信息
-func (p *deepseekProvider) AnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, baziInfo map[string]string) (string, error) {
-	resp, err := p.analyze(ctx, name, gender, birthTime, baziInfo)
+func (p *deepseekProvider) AnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string) (string, error) {
+	resp, err := p.analyze(ctx, name, gender, birthTime, calendar, baziInfo)
 	if err != nil {
 		return "", fmt.Errorf("AI 分析失败: %w", err)
 	}
@@ -108,14 +110,16 @@ func (p *deepseekProvider) AnalyzeBazi(ctx context.Context, name, gender string,
 //	ctx: 上下文
 //	name: 姓名
 //	gender: 性别
+//	birthTime: 出生时间
+//	calendar: 日历类型 (lunar/solar)
 //	baziInfo: 八字信息
 //	handler: 流式响应处理函数
 //
 // 返回值：
 //
 //	error: 错误信息
-func (p *deepseekProvider) StreamAnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, baziInfo map[string]string, handler types.StreamHandler) error {
-	promptText := prompt.BuildBaziPrompt(name, gender, birthTime, baziInfo)
+func (p *deepseekProvider) StreamAnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string, handler types.StreamHandler) error {
+	promptText := prompt.BuildBaziPrompt(name, gender, birthTime, calendar, baziInfo)
 
 	req := chatRequest{
 		Model:     p.config.AIConfig.DeepseekModel,
@@ -148,14 +152,16 @@ func (p *deepseekProvider) GetProviderName() string {
 //	ctx: 上下文
 //	name: 姓名
 //	gender: 性别
+//	birthTime: 出生时间
+//	calendar: 日历类型 (lunar/solar)
 //	baziInfo: 八字信息
 //
 // 返回值：
 //
 //	*ai.DeepseekResponse: 分析结果
 //	error: 错误信息
-func (p *deepseekProvider) AnalyzeBaziWithReasoning(ctx context.Context, name, gender string, birthTime time.Time, baziInfo map[string]string) (*ai.DeepseekResponse, error) {
-	return p.analyze(ctx, name, gender, birthTime, baziInfo)
+func (p *deepseekProvider) AnalyzeBaziWithReasoning(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string) (*ai.DeepseekResponse, error) {
+	return p.analyze(ctx, name, gender, birthTime, calendar, baziInfo)
 }
 
 // analyze 内部八字分析方法
@@ -164,14 +170,16 @@ func (p *deepseekProvider) AnalyzeBaziWithReasoning(ctx context.Context, name, g
 //	ctx: 上下文
 //	name: 姓名
 //	gender: 性别
+//	birthTime: 出生时间
+//	calendar: 日历类型 (lunar/solar)
 //	baziInfo: 八字信息
 //
 // 返回值：
 //
 //	*ai.DeepseekResponse: 分析结果
 //	error: 错误信息
-func (p *deepseekProvider) analyze(ctx context.Context, name, gender string, birthTime time.Time, baziInfo map[string]string) (*ai.DeepseekResponse, error) {
-	promptText := prompt.BuildBaziPrompt(name, gender, birthTime, baziInfo)
+func (p *deepseekProvider) analyze(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string) (*ai.DeepseekResponse, error) {
+	promptText := prompt.BuildBaziPrompt(name, gender, birthTime, calendar, baziInfo)
 
 	req := chatRequest{
 		Model:     p.config.AIConfig.DeepseekModel,

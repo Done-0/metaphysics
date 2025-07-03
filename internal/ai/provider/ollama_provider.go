@@ -44,19 +44,21 @@ func NewOllamaProvider(cfg *configs.Config) (types.Service, error) {
 //	ctx: 上下文
 //	name: 姓名
 //	gender: 性别
+//	birthTime: 出生时间
+//	calendar: 日历类型 (lunar/solar)
 //	baziInfo: 八字信息
 //
 // 返回值：
 //
 //	string: 分析结果
 //	error: 错误信息
-func (p *ollamaProvider) AnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, baziInfo map[string]string) (string, error) {
+func (p *ollamaProvider) AnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string) (string, error) {
 	llm, err := p.llmInstance()
 	if err != nil {
 		return "", fmt.Errorf("获取 ollama LLM 实例失败: %w", err)
 	}
 
-	promptText := prompt.BuildBaziPrompt(name, gender, birthTime, baziInfo)
+	promptText := prompt.BuildBaziPrompt(name, gender, birthTime, calendar, baziInfo)
 	data := map[string]any{"prompt": promptText}
 	tpl := prompts.NewPromptTemplate("{{.prompt}}", []string{"prompt"})
 	chain := chains.NewLLMChain(llm, tpl)
@@ -77,14 +79,16 @@ func (p *ollamaProvider) AnalyzeBazi(ctx context.Context, name, gender string, b
 //	ctx: 上下文
 //	name: 姓名
 //	gender: 性别
+//	birthTime: 出生时间
+//	calendar: 日历类型 (lunar/solar)
 //	baziInfo: 八字信息
 //
 // 返回值：
 //
 //	*ai.DeepseekResponse: 分析结果（包含推理过程）
 //	error: 错误信息
-func (p *ollamaProvider) AnalyzeBaziWithReasoning(ctx context.Context, name, gender string, birthTime time.Time, baziInfo map[string]string) (*ai.DeepseekResponse, error) {
-	content, err := p.AnalyzeBazi(ctx, name, gender, birthTime, baziInfo)
+func (p *ollamaProvider) AnalyzeBaziWithReasoning(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string) (*ai.DeepseekResponse, error) {
+	content, err := p.AnalyzeBazi(ctx, name, gender, birthTime, calendar, baziInfo)
 	if err != nil {
 		return nil, fmt.Errorf("AI 分析失败: %w", err)
 	}
@@ -97,19 +101,21 @@ func (p *ollamaProvider) AnalyzeBaziWithReasoning(ctx context.Context, name, gen
 //	ctx: 上下文
 //	name: 姓名
 //	gender: 性别
+//	birthTime: 出生时间
+//	calendar: 日历类型 (lunar/solar)
 //	baziInfo: 八字信息
 //	handler: 流式响应处理函数
 //
 // 返回值：
 //
 //	error: 错误信息
-func (p *ollamaProvider) StreamAnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, baziInfo map[string]string, handler types.StreamHandler) error {
+func (p *ollamaProvider) StreamAnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string, handler types.StreamHandler) error {
 	llm, err := p.llmInstance()
 	if err != nil {
 		return fmt.Errorf("获取 ollama LLM 实例失败: %w", err)
 	}
 
-	promptText := prompt.BuildBaziPrompt(name, gender, birthTime, baziInfo)
+	promptText := prompt.BuildBaziPrompt(name, gender, birthTime, calendar, baziInfo)
 	_, err = llms.GenerateFromSinglePrompt(ctx, llm, promptText, llms.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
 		return handler(&ai.StreamChunk{Content: string(chunk)})
 	}))

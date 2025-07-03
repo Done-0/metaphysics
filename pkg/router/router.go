@@ -30,5 +30,11 @@ func New(app *gin.Engine) {
 	routes.RegisterTestRoutes(api1, api2)
 
 	// 注册八字相关的路由
-	routes.RegisterBaziRoutes(app)
+	routes.RegisterBaziRoutes(api1)
+
+	// 注册账户相关的路由
+	routes.RegisterAccountRoutes(api1)
+
+	// 注册验证码相关的路由
+	routes.RegisterVerificationRoutes(api1)
 }

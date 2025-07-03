@@ -4,6 +4,7 @@
 package model
 
 import (
+	"github.com/Done-0/metaphysics/internal/model/account"
 	"github.com/Done-0/metaphysics/internal/model/bazi"
 )
 
@@ -13,5 +14,6 @@ import (
 func GetAllModels() []any {
 	return []any{
 		&bazi.BaziRecord{}, // 八字记录模型
+		&account.Account{}, // 账户模型
 	}
 }
