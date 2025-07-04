@@ -73,8 +73,8 @@ func AuthMiddleware() gin.HandlerFunc {
 			tokenString = newTokens["Authorization"]
 		}
 
-		// 从 access_token 中解析 accountID
-		accountID, err := utils.ParseAccountFromJWT(tokenString)
+		// 从 access_token 中解析 userID
+		userID, err := utils.ParseAccountFromJWT(tokenString)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"code":    401,
@@ -84,7 +84,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// 检验会话有效性
-		sessionCacheKey := fmt.Sprintf("%s:%d", DefaultJWTConfig.UserCache, accountID)
+		sessionCacheKey := fmt.Sprintf("%s:%d", DefaultJWTConfig.UserCache, userID)
 		if sessionVal, err := global.RedisClient.Get(c.Request.Context(), sessionCacheKey).Result(); err != nil || sessionVal == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"code":    401,
@@ -93,8 +93,8 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// 将 accountID 存入上下文，方便后续使用
-		c.Set("accountID", accountID)
+		// 将 userID 存入上下文，方便后续使用
+		c.Set("user_id", userID)
 
 		c.Next()
 	}

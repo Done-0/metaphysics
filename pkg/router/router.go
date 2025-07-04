@@ -32,9 +32,12 @@ func New(app *gin.Engine) {
 	// 注册八字相关的路由
 	routes.RegisterBaziRoutes(api1)
 
-	// 注册账户相关的路由
-	routes.RegisterAccountRoutes(api1)
+	// 注册用户相关的路由
+	routes.RegisterUserRoutes(api1)
 
 	// 注册验证码相关的路由
 	routes.RegisterVerificationRoutes(api1)
+
+	// 注册对话相关的路由
+	routes.RegisterConversationRoutes(api1)
 }

@@ -16,7 +16,7 @@ import (
 	"github.com/Done-0/metaphysics/configs"
 	"github.com/Done-0/metaphysics/internal/ai/prompt"
 	"github.com/Done-0/metaphysics/internal/ai/types"
-	"github.com/Done-0/metaphysics/pkg/vo/ai"
+	"github.com/Done-0/metaphysics/pkg/vo/conversation"
 )
 
 // ollamaProvider ollama 服务提供者
@@ -38,41 +38,6 @@ func NewOllamaProvider(cfg *configs.Config) (types.Service, error) {
 	return &ollamaProvider{config: cfg}, nil
 }
 
-// AnalyzeBazi 分析八字
-// 参数：
-//
-//	ctx: 上下文
-//	name: 姓名
-//	gender: 性别
-//	birthTime: 出生时间
-//	calendar: 日历类型 (lunar/solar)
-//	baziInfo: 八字信息
-//
-// 返回值：
-//
-//	string: 分析结果
-//	error: 错误信息
-func (p *ollamaProvider) AnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string) (string, error) {
-	llm, err := p.llmInstance()
-	if err != nil {
-		return "", fmt.Errorf("获取 ollama LLM 实例失败: %w", err)
-	}
-
-	promptText := prompt.BuildBaziPrompt(name, gender, birthTime, calendar, baziInfo)
-	data := map[string]any{"prompt": promptText}
-	tpl := prompts.NewPromptTemplate("{{.prompt}}", []string{"prompt"})
-	chain := chains.NewLLMChain(llm, tpl)
-	result, err := chain.Call(ctx, data)
-	if err != nil {
-		return "", fmt.Errorf("AI 分析失败: %w", err)
-	}
-	text, ok := result["text"].(string)
-	if !ok {
-		return "", fmt.Errorf("AI 结果解析失败")
-	}
-	return text, nil
-}
-
 // AnalyzeBaziWithReasoning 分析八字（带推理过程）
 // 参数：
 //
@@ -85,14 +50,42 @@ func (p *ollamaProvider) AnalyzeBazi(ctx context.Context, name, gender string, b
 //
 // 返回值：
 //
-//	*ai.DeepseekResponse: 分析结果（包含推理过程）
+//	*conversation.BaziAnalysisResponse: 分析结果（包含推理过程）
 //	error: 错误信息
-func (p *ollamaProvider) AnalyzeBaziWithReasoning(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string) (*ai.DeepseekResponse, error) {
-	content, err := p.AnalyzeBazi(ctx, name, gender, birthTime, calendar, baziInfo)
+func (p *ollamaProvider) AnalyzeBaziWithReasoning(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string) (*conversation.BaziAnalysisResponse, error) {
+	llm, err := p.llmInstance()
+	if err != nil {
+		return nil, fmt.Errorf("获取 ollama LLM 实例失败: %w", err)
+	}
+
+	promptText := prompt.BuildBaziPrompt(name, gender, birthTime, calendar, baziInfo)
+	data := map[string]any{"prompt": promptText}
+	tpl := prompts.NewPromptTemplate("{{.prompt}}", []string{"prompt"})
+	chain := chains.NewLLMChain(llm, tpl)
+	result, err := chain.Call(ctx, data)
 	if err != nil {
 		return nil, fmt.Errorf("AI 分析失败: %w", err)
 	}
-	return &ai.DeepseekResponse{Content: content}, nil
+	content, ok := result["text"].(string)
+	if !ok {
+		return nil, fmt.Errorf("AI 结果解析失败")
+	}
+
+	// 从baziInfo中获取八字信息
+	yearPillar := baziInfo["year"]
+	monthPillar := baziInfo["month"]
+	dayPillar := baziInfo["day"]
+	hourPillar := baziInfo["hour"]
+
+	return &conversation.BaziAnalysisResponse{
+		Name:        name,
+		Gender:      gender,
+		YearPillar:  yearPillar,
+		MonthPillar: monthPillar,
+		DayPillar:   dayPillar,
+		HourPillar:  hourPillar,
+		Analysis:    content,
+	}, nil
 }
 
 // StreamAnalyzeBazi 流式分析八字
@@ -117,12 +110,12 @@ func (p *ollamaProvider) StreamAnalyzeBazi(ctx context.Context, name, gender str
 
 	promptText := prompt.BuildBaziPrompt(name, gender, birthTime, calendar, baziInfo)
 	_, err = llms.GenerateFromSinglePrompt(ctx, llm, promptText, llms.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
-		return handler(&ai.StreamChunk{Content: string(chunk)})
+		return handler(&conversation.StreamChunk{Content: string(chunk)})
 	}))
 	if err != nil {
 		return fmt.Errorf("流式分析失败: %w", err)
 	}
-	return handler(&ai.StreamChunk{Done: true})
+	return handler(&conversation.StreamChunk{Done: true})
 }
 
 // DetermineProvider 确定要使用的 AI 提供商

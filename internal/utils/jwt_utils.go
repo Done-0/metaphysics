@@ -22,19 +22,19 @@ var (
 
 // GenerateJWT 生成 Access Token 和 Refresh Token
 // 参数：
-//   - accountID: 账户ID
+//   - userID: 用户ID
 //
 // 返回值：
 //   - string: Access Token
 //   - string: Refresh Token
 //   - error: 生成过程中的错误
-func GenerateJWT(accountID int64) (string, string, error) {
-	accessTokenString, err := generateToken(accountID, accessSecret, accessExpireTime)
+func GenerateJWT(userID int64) (string, string, error) {
+	accessTokenString, err := generateToken(userID, accessSecret, accessExpireTime)
 	if err != nil {
 		return "", "", err
 	}
 
-	refreshTokenString, err := generateToken(accountID, refreshSecret, refreshExpireTime)
+	refreshTokenString, err := generateToken(userID, refreshSecret, refreshExpireTime)
 	if err != nil {
 		return "", "", err
 	}
@@ -95,9 +95,9 @@ func RefreshTokenLogic(refreshTokenString string) (map[string]string, error) {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		accountID := int64(claims["account_id"].(float64))
+		userID := int64(claims["user_id"].(float64))
 
-		newAccessToken, newRefreshToken, err := GenerateJWT(accountID)
+		newAccessToken, newRefreshToken, err := GenerateJWT(userID)
 		if err != nil {
 			return nil, err
 		}
@@ -111,12 +111,12 @@ func RefreshTokenLogic(refreshTokenString string) (map[string]string, error) {
 	return nil, fmt.Errorf("refresh token 验证失败")
 }
 
-// ParseAccountFromJWT 从 JWT 中提取 accountID
+// ParseAccountFromJWT 从 JWT 中提取 userID
 // 参数：
 //   - tokenString: 令牌字符串
 //
 // 返回值：
-//   - int64: 账户ID
+//   - int64: 用户ID
 //   - error: 解析过程中的错误
 func ParseAccountFromJWT(tokenString string) (int64, error) {
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
@@ -131,27 +131,27 @@ func ParseAccountFromJWT(tokenString string) (int64, error) {
 		return 0, fmt.Errorf("无法解析 access token 中的 claims")
 	}
 
-	accountID, ok := claims["account_id"].(float64)
+	userID, ok := claims["user_id"].(float64)
 	if !ok {
-		return 0, fmt.Errorf("access token 中缺少 account_id")
+		return 0, fmt.Errorf("access token 中缺少 user_id")
 	}
 
-	return int64(accountID), nil
+	return int64(userID), nil
 }
 
 // generateToken 通用的 token 生成函数
 // 参数：
-//   - accountID: 账户ID
+//   - userID: 用户ID
 //   - secret: 密钥
 //   - expireTime: 过期时间
 //
 // 返回值：
 //   - string: 生成的令牌
 //   - error: 生成过程中的错误
-func generateToken(accountID int64, secret []byte, expireTime time.Duration) (string, error) {
+func generateToken(userID int64, secret []byte, expireTime time.Duration) (string, error) {
 	claims := jwt.MapClaims{
-		"account_id": accountID,
-		"exp":        time.Now().UTC().Add(expireTime).Unix(),
+		"user_id": userID,
+		"exp":     time.Now().UTC().Add(expireTime).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(secret)

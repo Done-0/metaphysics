@@ -6,7 +6,9 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 
+	auth_middleware "github.com/Done-0/metaphysics/internal/middleware/auth"
 	"github.com/Done-0/metaphysics/pkg/serve/controller/bazi"
+	baziMapperImpl "github.com/Done-0/metaphysics/pkg/serve/mapper/bazi/impl"
 	baziImpl "github.com/Done-0/metaphysics/pkg/serve/service/bazi/impl"
 )
 
@@ -14,16 +16,15 @@ import (
 // 参数：
 //   - r: Gin 路由组
 func RegisterBaziRoutes(r *gin.RouterGroup) {
-	// 创建服务实例
-	service := baziImpl.NewBaziService()
-	// 创建控制器
+	mapper := baziMapperImpl.NewBaziMapper()
+	service := baziImpl.NewBaziService(mapper)
 	controller := bazi.NewBaziController(service)
 
 	// 八字路由组
 	baziGroup := r.Group("/bazi")
 	{
-		baziGroup.POST("/analyze", controller.AnalyzeOneBazi)              // 普通分析八字
-		baziGroup.POST("/analyze/stream", controller.StreamAnalyzeOneBazi) // 流式分析八字
-		baziGroup.GET("/record", controller.GetBaziRecord)                 // 获取八字记录
+		baziGroup.POST("/calculate", controller.CalculateOneBazi)
+		baziGroup.GET("/record", auth_middleware.AuthMiddleware(), controller.GetOneBazi)
+		baziGroup.GET("/records", auth_middleware.AuthMiddleware(), controller.GetBaziList)
 	}
 }

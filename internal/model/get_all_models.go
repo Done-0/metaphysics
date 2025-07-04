@@ -4,8 +4,8 @@
 package model
 
 import (
-	"github.com/Done-0/metaphysics/internal/model/account"
 	"github.com/Done-0/metaphysics/internal/model/bazi"
+	"github.com/Done-0/metaphysics/internal/model/user"
 )
 
 // GetAllModels 获取并注册所有模型
@@ -13,7 +13,7 @@ import (
 //   - []any: 所有需要注册到数据库的模型列表
 func GetAllModels() []any {
 	return []any{
-		&bazi.BaziRecord{}, // 八字记录模型
-		&account.Account{}, // 账户模型
+		&bazi.Bazi{},       // 八字模型
+		&user.User{},       // 用户模型
 	}
 }

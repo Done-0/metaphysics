@@ -30,14 +30,6 @@ func New() types.Service {
 
 		// 按优先级选择 Provider
 		switch {
-		case cfg.AIConfig.DeepseekEnabled:
-			provider, err := provider.NewDeepseekProvider(cfg)
-			if err == nil {
-				instance = provider
-				return
-			}
-			fmt.Printf("[AI] deepseek 初始化失败: %v，降级使用 ollama\n", err)
-			fallthrough
 		case cfg.AIConfig.OllamaEnabled:
 			provider, err := provider.NewOllamaProvider(cfg)
 			if err == nil {

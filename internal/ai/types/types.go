@@ -7,7 +7,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/Done-0/metaphysics/pkg/vo/ai"
+	"github.com/Done-0/metaphysics/pkg/vo/conversation"
 )
 
 // Provider AI 服务提供商类型
@@ -19,11 +19,11 @@ const (
 )
 
 // StreamHandler 流式响应处理器
-type StreamHandler func(chunk *ai.StreamChunk) error
+type StreamHandler func(chunk *conversation.StreamChunk) error
 
 // Service AI 服务接口，所有 Provider 必须实现
 type Service interface {
-	// AnalyzeBazi 分析八字
+	// AnalyzeBaziWithReasoning 分析八字（带推理过程）
 	// 参数：
 	//   ctx: 上下文
 	//   name: 姓名
@@ -32,9 +32,9 @@ type Service interface {
 	//   calendar: 日历类型 (lunar/solar)
 	//   baziInfo: 八字信息
 	// 返回值：
-	//   string: 分析结果
+	//   *conversation.BaziAnalysisResponse: 分析结果（包含推理过程）
 	//   error: 错误信息
-	AnalyzeBazi(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string) (string, error)
+	AnalyzeBaziWithReasoning(ctx context.Context, name, gender string, birthTime time.Time, calendar string, baziInfo map[string]string) (*conversation.BaziAnalysisResponse, error)
 
 	// StreamAnalyzeBazi 流式分析八字
 	// 参数：
